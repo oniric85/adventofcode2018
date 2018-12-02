@@ -47,7 +47,7 @@ func main () {
 				fmt.Println("Found the two strings:", str, x)
 				fmt.Println("They differ for character at position", pos)
 				fmt.Println("The common part is:", str[:pos] + str[pos+1:])
-				break
+				return
 			}
 		}
 
@@ -57,6 +57,4 @@ func main () {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("")
 }
