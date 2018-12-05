@@ -43,7 +43,22 @@ func findSleepyGuard(m map[int][]int) int {
 	return sleepy
 }
 
-func findMostSleptMinute(minutes []int) int {
+func findFrequentlySleptMinute(m map[int][]int) (int, int) {
+	mostSleptMinute := 0
+	maxTimesSlept := 0
+	frequentSleeper := 0
+	for guardId, minutes := range m {
+		guardMostSleptMinute, timesSlept := findMostSleptMinute(minutes)
+		if timesSlept > maxTimesSlept {
+			mostSleptMinute = guardMostSleptMinute
+			maxTimesSlept = timesSlept
+			frequentSleeper = guardId
+		}
+	}
+	return frequentSleeper, mostSleptMinute
+}
+
+func findMostSleptMinute(minutes []int) (int, int) {
 	mostSleptMinute := 0
 	maxSlept := 0
 
@@ -57,7 +72,7 @@ func findMostSleptMinute(minutes []int) int {
 		}
 	}
 
-	return mostSleptMinute
+	return mostSleptMinute, maxSlept
 }
 
 func main() {
@@ -98,9 +113,17 @@ func main() {
 
 	// find the guard that sleeps the most
 	sleepyGuard := findSleepyGuard(guardsMap)
-	mostSleptMinute := findMostSleptMinute(guardsMap[sleepyGuard])
+	mostSleptMinute, _ := findMostSleptMinute(guardsMap[sleepyGuard])
 
+	// first part solution
 	fmt.Println("Guard with more slept minutes:", sleepyGuard)
 	fmt.Println("The most slept minute of this guard is:", mostSleptMinute)
 	fmt.Println("Product of the two values is:", sleepyGuard*mostSleptMinute)
+
+	// second part solution
+	frequentSleeperGuard, frequentlySleptMinute := findFrequentlySleptMinute(guardsMap)
+
+	fmt.Println("Guard that slept the same minute the most:", frequentSleeperGuard)
+	fmt.Println("The minute the guard spent sleeping the most:", frequentlySleptMinute)
+	fmt.Println("Product of the two values is:", frequentSleeperGuard*frequentlySleptMinute)
 }
