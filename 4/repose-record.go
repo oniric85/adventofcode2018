@@ -78,6 +78,10 @@ func findMostSleptMinute(minutes []int) (int, int) {
 func main() {
 	lines, err := readAndSortInput()
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	guardsMap := make(map[int][]int)
 
 	r, _ := regexp.Compile("[[0-9]{4}-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2})] (.+)")
@@ -105,10 +109,6 @@ func main() {
 				guardsMap[currentGuard] = append(guardsMap[currentGuard], i)
 			}
 		}
-	}
-
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	// find the guard that sleeps the most
