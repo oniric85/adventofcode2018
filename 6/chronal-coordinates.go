@@ -140,7 +140,6 @@ func main() {
 
 			// for second part
 			totalDistance := TotalDistanceAllCoordinates(locations, j, i)
-			fmt.Println(totalDistance)
 			if totalDistance < 10000 {
 				safeArea++
 			}
