@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"log"
 	"bufio"
+	"fmt"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -28,7 +28,7 @@ func buildFreqSlice() []int {
 	}
 
 	if err := scanner.Err(); err != nil {
-        log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	return freqSlice
@@ -45,7 +45,7 @@ func findFirstRepeatedFreq() int {
 	for {
 		for i := 0; i < len(freqSlice); i++ {
 			freq += freqSlice[i]
-			
+
 			if _, ok := freqMap[freq]; ok {
 				return freq
 			}

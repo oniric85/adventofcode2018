@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"log"
 	"bufio"
+	"fmt"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	if err := scanner.Err(); err != nil {
-        log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	fmt.Println("Final frequency:", freq)

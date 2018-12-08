@@ -1,25 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
-	"os"
+	"fmt"
 	"log"
+	"os"
 )
 
 func reverseMap(m map[rune]int) map[int]bool {
-    n := make(map[int]bool)
-    for _, v := range m {
-        n[v] = true
-    }
-    return n
+	n := make(map[int]bool)
+	for _, v := range m {
+		n[v] = true
+	}
+	return n
 }
 
 func checkLetters(s string) (bool, bool) {
 	lettersMap := make(map[rune]int)
 
 	for _, char := range s {
-		lettersMap[char] += + 1
+		lettersMap[char] += +1
 	}
 
 	reversedMap := reverseMap(lettersMap)
@@ -30,7 +30,7 @@ func checkLetters(s string) (bool, bool) {
 	return has2, has3
 }
 
-func main () {
+func main() {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -55,5 +55,5 @@ func main () {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Checksum:", count2 * count3)
+	fmt.Println("Checksum:", count2*count3)
 }

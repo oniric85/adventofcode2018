@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
-	"os"
+	"fmt"
 	"log"
+	"os"
 )
 
 func compareStrings(s string, t string) int {
@@ -29,7 +29,7 @@ func compareStrings(s string, t string) int {
 	return -1
 }
 
-func main () {
+func main() {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +46,7 @@ func main () {
 			if pos := compareStrings(str, x); pos >= 0 {
 				fmt.Println("Found the two strings:", str, x)
 				fmt.Println("They differ for character at position", pos)
-				fmt.Println("The common part is:", str[:pos] + str[pos+1:])
+				fmt.Println("The common part is:", str[:pos]+str[pos+1:])
 				return
 			}
 		}
