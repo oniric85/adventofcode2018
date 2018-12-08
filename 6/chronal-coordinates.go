@@ -46,6 +46,14 @@ func ManhattanDistance(x1 int, y1 int, x2 int, y2 int) int {
 	return Abs(x1-x2) + Abs(y1-y2)
 }
 
+func TotalDistanceAllCoordinates(coordinates [][]int, x int, y int) (distance int) {
+	for _, coords := range coordinates {
+		distance += ManhattanDistance(x, y, coords[0], coords[1])
+	}
+
+	return distance
+}
+
 func FindClosestLocation(locations [][]int, x int, y int) int {
 	closestLocation := -1
 	closestDistance := -1
@@ -121,7 +129,7 @@ func main() {
 			if closestLocation >= 0 {
 				areas[closestLocation]++
 
-				if (i == 0 || j == 0 || i == bottom || j == right) && Index(infiniteLocations, closestLocation) < 0 {
+				if (i == 0 || j == 0 || i == bottom-1 || j == right-1) && Index(infiniteLocations, closestLocation) < 0 {
 					// we are on the border so the retrieved location
 					// has infinite area
 					infiniteLocations = append(infiniteLocations, closestLocation)
