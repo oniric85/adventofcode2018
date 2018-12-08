@@ -13,9 +13,11 @@ import (
 
 func readAndSortInput() ([]string, error) {
 	file, err := os.Open("input.txt")
+
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+
 	defer file.Close()
 
 	lines := []string{}
