@@ -123,6 +123,8 @@ func main() {
 	areas := make([]int, len(locations))
 	right, bottom := BottomRightPoint(locations)
 
+	safeArea := 0
+
 	for i := 0; i < bottom; i++ {
 		for j := 0; j < right; j++ {
 			closestLocation := FindClosestLocation(locations, j, i)
@@ -135,8 +137,16 @@ func main() {
 					infiniteLocations = append(infiniteLocations, closestLocation)
 				}
 			}
+
+			// for second part
+			totalDistance := TotalDistanceAllCoordinates(locations, j, i)
+			fmt.Println(totalDistance)
+			if totalDistance < 10000 {
+				safeArea++
+			}
 		}
 	}
 
 	fmt.Println("The maximum non-infinite area is:", MaxNonInfinite(areas, infiniteLocations))
+	fmt.Println("The safe area is:", safeArea)
 }
