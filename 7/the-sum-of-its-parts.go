@@ -6,21 +6,6 @@ import (
 	"sort"
 )
 
-func FindReadySteps(instructions map[string][]string) (ready []string) {
-	for step, before := range instructions {
-		// a step is ready if the length of the associated array of steps is zero
-		// this means that no step is needed before it can be carried on
-		if len(before) == 0 {
-			ready = append(ready, step)
-		}
-	}
-
-	// return the list sorted to cope with puzzle constraints
-	sort.Strings(ready)
-
-	return ready
-}
-
 func FindOrder(instructions map[string][]string) (ordered string) {
 	ready := FindReadySteps(instructions)
 	var step string
