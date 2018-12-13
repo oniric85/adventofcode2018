@@ -1,49 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
-	"regexp"
 	"sort"
 )
-
-func ReadInstructionsFromFile() (instr map[string][]string, err error) {
-	file, err := os.Open("input.txt")
-
-	if err != nil {
-		return instr, err
-	}
-
-	defer file.Close()
-
-	instr = make(map[string][]string)
-	scanner := bufio.NewScanner(file)
-
-	r, _ := regexp.Compile("Step ([A-Z]) must be finished before step ([A-Z]) can begin.")
-	for scanner.Scan() {
-		matches := r.FindStringSubmatch(scanner.Text())
-
-		if instr[matches[2]] == nil {
-			instr[matches[2]] = []string{}
-		}
-
-		if instr[matches[1]] == nil {
-			instr[matches[1]] = []string{}
-		}
-
-		instr[matches[2]] = append(instr[matches[2]], matches[1])
-	}
-
-	return instr, scanner.Err()
-}
-
-func Unshift(lst []string) (string, []string) {
-	x, lst := lst[0], lst[1:]
-
-	return x, lst
-}
 
 func FindReadySteps(instructions map[string][]string) (ready []string) {
 	for step, before := range instructions {
@@ -60,21 +21,12 @@ func FindReadySteps(instructions map[string][]string) (ready []string) {
 	return ready
 }
 
-func Remove(s string, list []string) []string {
-	for i := 0; i < len(list); i++ {
-		if list[i] == s {
-			list = append(list[:i], list[i+1:]...)
-		}
-	}
-	return list
-}
-
 func FindOrder(instructions map[string][]string) (ordered string) {
 	ready := FindReadySteps(instructions)
 	var step string
 
 	for len(ready) > 0 {
-		step, ready = Unshift(ready)
+		step, ready = Shift(ready)
 
 		ordered += step
 
