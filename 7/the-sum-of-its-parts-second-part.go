@@ -105,16 +105,6 @@ func FindTotalTimeWithHelpFromElves(instructions map[string][]string, elves int)
 			workingWorkers.Enqueue(worker)
 		}
 
-		fmt.Print(timeElapsed, " ")
-
-		for i := 0; i < workingWorkers.Len(); i++ {
-			worker := workingWorkers.Get(i)
-
-			fmt.Print(worker.step, "(", worker.Remaining(), ") ")
-		}
-
-		fmt.Println("|", ordered)
-
 		for i := 0; i < workingWorkers.Len(); i++ {
 			worker := workingWorkers.Get(i)
 			worker.Work()
