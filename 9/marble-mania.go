@@ -12,7 +12,6 @@ type MarblesGame struct {
 	totalMarbles  int
 	marbles       []int
 	players       []int
-	current       int
 	highScore     int
 	currentMarble int
 	currentValue  int
@@ -115,4 +114,9 @@ func main() {
 	game.Play()
 
 	fmt.Println("High score is:", game.GetHighScore())
+
+	gameSecondPart := MarblesGame{}
+	game.New(numPlayers, lastMarbleValue*100)
+	game.Play()
+	fmt.Println("High score for second part of the puzzle is:", gameSecondPart.GetHighScore())
 }
