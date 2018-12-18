@@ -8,72 +8,80 @@ import (
 	"strconv"
 )
 
-type MarblesGame struct {
-	totalMarbles  int
-	marbles       []int
-	players       []int
-	highScore     int
-	currentMarble int
-	currentValue  int
-	currentPlayer int
+type Marble struct {
+	value uint
+	prev  *Marble
+	next  *Marble
 }
 
-func Reminder(num int, den int) int {
-	r := num % den
-	if r < 0 {
-		return r + den
-	}
-
-	return r
+type MarblesGame struct {
+	totalMarbles  int
+	players       []uint
+	currentMarble *Marble
+	currentValue  uint
+	currentPlayer int
+	highScore     uint
 }
 
 func (game *MarblesGame) New(numPlayers int, totalMarbles int) {
-	game.players = make([]int, numPlayers)
+	game.players = make([]uint, numPlayers)
 	game.totalMarbles = totalMarbles
 
-	game.marbles = []int{0}
-
-	game.currentMarble = 0
+	game.currentMarble = &Marble{value: 0}
+	game.currentMarble.prev, game.currentMarble.next = game.currentMarble, game.currentMarble
 	game.currentValue = 1
 	game.currentPlayer = 0
 }
 
-func (game *MarblesGame) PositionCurrentMarble() {
-	nextPosition := ((game.currentMarble+1)%len(game.marbles) + 1) % (len(game.marbles) + 1)
+func (game *MarblesGame) PositionNewMarble() {
+	newMarble := &Marble{value: game.currentValue}
+	newMarble.prev = game.currentMarble.next
+	newMarble.next = game.currentMarble.next.next
 
-	game.marbles = append(game.marbles, 0) // make room for a new element
-	copy(game.marbles[(nextPosition+1)%len(game.marbles):], game.marbles[nextPosition:])
-	game.marbles[nextPosition] = game.currentValue
+	game.currentMarble.next.next.prev = newMarble
+	game.currentMarble.next.next = newMarble
 
-	game.currentMarble = nextPosition
+	game.currentMarble = newMarble
+}
+
+func (game *MarblesGame) MoveCurrentCounterClockwise(num int) {
+	for i := 0; i < num; i++ {
+		game.currentMarble = game.currentMarble.prev
+	}
+}
+
+func (game *MarblesGame) RemoveCurrent() {
+	current := game.currentMarble.next
+	current.prev = game.currentMarble.prev
+	current.prev.next = current
+
+	game.currentMarble = current
 }
 
 func (game *MarblesGame) ScorePoints() {
-	toBeRemovedMarble := Reminder(game.currentMarble-7, len(game.marbles))
-
 	game.players[game.currentPlayer] += game.currentValue
-	game.players[game.currentPlayer] += game.marbles[toBeRemovedMarble]
+	game.MoveCurrentCounterClockwise(7)
+	game.players[game.currentPlayer] += game.currentMarble.value
 
 	if game.players[game.currentPlayer] > game.highScore {
 		game.highScore = game.players[game.currentPlayer]
 	}
 
-	game.marbles = append(game.marbles[:toBeRemovedMarble], game.marbles[toBeRemovedMarble+1:]...)
-	game.currentMarble = toBeRemovedMarble
+	game.RemoveCurrent()
 }
 
 func (game *MarblesGame) Move() {
 	if game.currentValue%23 == 0 {
 		game.ScorePoints()
 	} else {
-		game.PositionCurrentMarble()
+		game.PositionNewMarble()
 	}
 
 	game.currentValue++
 	game.currentPlayer = (game.currentPlayer + 1) % len(game.players)
 }
 
-func (game *MarblesGame) GetHighScore() int {
+func (game *MarblesGame) GetHighScore() uint {
 	return game.highScore
 }
 
@@ -116,7 +124,7 @@ func main() {
 	fmt.Println("High score is:", game.GetHighScore())
 
 	gameSecondPart := MarblesGame{}
-	game.New(numPlayers, lastMarbleValue*100)
-	game.Play()
+	gameSecondPart.New(numPlayers, lastMarbleValue*100)
+	gameSecondPart.Play()
 	fmt.Println("High score for second part of the puzzle is:", gameSecondPart.GetHighScore())
 }
