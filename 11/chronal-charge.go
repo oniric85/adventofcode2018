@@ -18,9 +18,20 @@ func CellPower(x, y, serialNumber int) (p int) {
 	return p
 }
 
-func SquarePower(top, left int, grid [][]int) (p int) {
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
+func SquarePower(top, left int, grid [][]int, n int, powers [][]int) (p int) {
+	if left > 0 {
+		// use memoization to reduce time complexity
+		p = powers[top][left-1]
+		for i := 0; i < n; i++ {
+			p -= grid[top+i][left-1]
+			p += grid[top+i][left+n-1]
+		}
+
+		return p
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
 			p += grid[top+i][left+j]
 		}
 	}
@@ -40,11 +51,14 @@ func CreateGrid(serialNumber int, n int) [][]int {
 	return grid
 }
 
-func MaxSquare(grid [][]int) (maxX, maxY int) {
-	maxPower := 0
-	for i := 0; i < len(grid)-3; i++ {
-		for j := 0; j < len(grid)-3; j++ {
-			power := SquarePower(i, j, grid)
+func MaxSquare(grid [][]int, n int) (maxPower, maxX, maxY int) {
+	powers := make([][]int, len(grid))
+
+	for i := 0; i < len(grid)-n; i++ {
+		powers[i] = make([]int, len(grid))
+		for j := 0; j < len(grid)-n; j++ {
+			power := SquarePower(i, j, grid, n, powers)
+			powers[i][j] = power
 
 			if power > maxPower {
 				maxPower = power
@@ -54,13 +68,25 @@ func MaxSquare(grid [][]int) (maxX, maxY int) {
 		}
 	}
 
-	return maxX + 1, maxY + 1
+	return maxPower, maxX + 1, maxY + 1
 }
 
 func main() {
 	grid := CreateGrid(6548, 300)
 
-	x, y := MaxSquare(grid)
+	maxPower := 0
+	maxSize := 1
+	maxX := 0
+	maxY := 0
+	for i := 1; i <= 300; i++ {
+		power, x, y := MaxSquare(grid, i)
+		if power > maxPower {
+			maxPower = power
+			maxSize = i
+			maxX = x
+			maxY = y
+		}
+	}
 
-	fmt.Println("Largest square:", x, ",", y)
+	fmt.Println("Largest square: size=", maxSize, ",power=", maxPower, ",x=", maxX, ",y=", maxY)
 }
