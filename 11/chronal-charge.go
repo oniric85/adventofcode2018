@@ -19,18 +19,17 @@ func CellPower(x, y, serialNumber int) (p int) {
 }
 
 func SquarePower(top, left int, grid [][]int, n int, powers [][]int) (p int) {
-	if left > 0 {
-		// use memoization to reduce time complexity
-		p = powers[top][left-1]
-		for i := 0; i < n; i++ {
-			p -= grid[top+i][left-1]
-			p += grid[top+i][left+n-1]
-		}
-
-		return p
-	}
-
 	for i := 0; i < n; i++ {
+		if left > 0 {
+			// use memoization to reduce time complexity
+			p = powers[top][left-1]
+			for k := 0; k < n; k++ {
+				p -= grid[top+k][left-1]
+				p += grid[top+k][left+n-1]
+			}
+
+			return p
+		}
 		for j := 0; j < n; j++ {
 			p += grid[top+i][left+j]
 		}
