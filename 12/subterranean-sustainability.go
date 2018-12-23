@@ -42,13 +42,19 @@ func GrowGeneration(state string, rules RuleSet, initialShift int) (newState str
 		newState += outcome
 	}
 
+	// adjust borders
 	if newState[0:1] == "#" {
 		newState = "." + newState
 		shift--
+	} else if newState[0:5] == "....." {
+		newState = newState[5:]
+		shift += 5
 	}
 
 	if newState[len(newState)-1:] == "#" {
 		newState = newState + "."
+	} else if newState[len(newState)-5:] == "....." {
+		newState = newState[:len(newState)-5]
 	}
 
 	return newState, shift
