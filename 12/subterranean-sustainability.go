@@ -33,28 +33,23 @@ func (r *RuleSet) Match(str string) string {
 }
 
 func GrowGeneration(state string, rules RuleSet, initialShift int) (newState string, shift int) {
-	shift = initialShift
+	shift = initialShift - 3
 	// add padding to simplify logic
-	state = ".." + state + ".."
+	state = "....." + state + "....."
 	for i := 2; i < len(state)-2; i++ {
 		pattern := state[i-2 : i+3]
 		outcome := rules.Match(pattern)
 		newState += outcome
 	}
 
-	// adjust borders
-	if newState[0:1] == "#" {
-		newState = "." + newState
-		shift--
-	} else if newState[0:5] == "....." {
-		newState = newState[5:]
-		shift += 5
+	// adjust borders and shift
+	for newState[0] == '.' {
+		shift++
+		newState = newState[1:]
 	}
 
-	if newState[len(newState)-1:] == "#" {
-		newState = newState + "."
-	} else if newState[len(newState)-5:] == "....." {
-		newState = newState[:len(newState)-5]
+	for newState[len(newState)-1] == '.' {
+		newState = newState[:len(newState)-1]
 	}
 
 	return newState, shift
@@ -98,6 +93,25 @@ func ReadInstructions() (string, RuleSet, error) {
 	return state, ruleset, scanner.Err()
 }
 
+func Answer(state string, ruleset RuleSet, generations int) int {
+	shift, prevShift := 0, 0
+	prevResult := 0
+	states := make(map[string]bool)
+	for i := 1; i <= generations; i++ {
+		state, shift = GrowGeneration(state, ruleset, prevShift)
+		if _, ok := states[state]; ok {
+			// calculate final result based on linear regression
+			result := Result(state, shift)
+			return result + (generations-i)*(result-prevResult)
+		}
+		states[state] = true
+		prevShift = shift
+		prevResult = Result(state, shift)
+	}
+
+	return Result(state, shift)
+}
+
 func main() {
 	state, ruleset, err := ReadInstructions()
 
@@ -105,12 +119,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	shift := 0
-	fmt.Println(" 0:", state)
-	for i := 1; i <= 20; i++ {
-		state, shift = GrowGeneration(state, ruleset, shift)
-		fmt.Printf("%2d: %s\n", i, state)
-	}
+	fmt.Println("Result for 20 generations is:", Answer(state, ruleset, 20))
 
-	fmt.Println("Result:", Result(state, shift))
+	// my input start looping at generation 186
+	// after the loop the pattern kept shifting right one position every generation
+	// and the result increased by 194 on each iteration
+	fmt.Println("Result for 50000000000 generations is:", Answer(state, ruleset, 50000000000))
 }
